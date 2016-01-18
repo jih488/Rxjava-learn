@@ -199,3 +199,7 @@ Observable.just(1,2,3,4,5)
 
    SubscribeOn(Schedulers.io())  指定任务工作线程
    ObserveOn(AndroidSchedulers.mainThread())  指定观察者处理返回结果所在线程为ui线程
+   
+   9、在Android中使用场景
+    (1)、先检查本地是否有数据缓存，有的话直接返回，没有的话再请求网路数据
+        
