@@ -47,7 +47,8 @@ myObservable.subscribe(mySubscriber); // Outputs "Hello, world!"
 这是一个展示流程的例子：myObservable是事件源，mySubscriber是订阅者，通过Observable的subscribe方法，将事件输出给订阅者去消费。
 
 4、什么是Observable   Observer   Subscriber   Subscription
-   Observable  事件观察者或者事件生产者  这两种叫法是针对不同的对象而言的。第一：对于Subscriber它是事件的生产者，因为当使用subscribe方法对一个Observable添加一个订阅者的时候，这个时候会立即调用Observable的call方法，将产生的一个字符串“Hello，world”这个事件交给订阅者的onNext()方法。第二：对于产生的这个字符串“Hello， world”而言，Observable就是一个事件观察者，它观察到了这个字符串的产生，然后将这个字符串产生的事件发送给了订阅者。
+   
+   Observable  事件观察者或者事件生产者  这两种叫法是针对不同的对象而言的。第一：对于Subscriber它是事件的生产者，因为当使用subscribe方法对一个Observable添加一个订阅者的时候，这个时候会立即调用onSubscribe的call方法，将产生的一个字符串“Hello，world”这个事件交给订阅者的onNext()方法。第二：对于产生的这个字符串“Hello， world”而言，Observable就是一个事件观察者，它观察到了这个字符串的产生，然后将这个字符串产生的事件发送给了订阅者。
    Observer和Subscriber是一个东西，Subscriber继承自Observer。
 
    Subscription是一个接口，提供了对一个Subscriber进行取消订阅（unSubscribe）和是否取消订阅（isUnsubscribe）的功能，它的具体实现就是Subscriber。上例中的第三步中subscribe方法将会返回一个Subscription，用户可以方便的取消订阅。
@@ -388,7 +389,90 @@ Observable.just(1,2,3,4,5)
      然后调用onSubscribe的call方法，参数就是我们subscribe方法中的参数Subscriber，接下来就一目了然了，第三步中那个不知道是谁的订阅者，就是通过subscribe方法传入的订阅者。
      至此，订阅者和观察就联系起来了。
      
-     11、多个订阅者的实现原理
+     11、多个订阅者的两种实现方法
+      a、 使用PublishSubject
+      PublishSubject<String> stringPublishSubject = PublishSubject.create();
+        Subscriber subscriber1 = new Subscriber() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+                System.out.println("subscriber1---->" + o.toString());
+            }
+        };
+
+        Subscriber subscriber2 = new Subscriber() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+                System.out.println("subscriber2---->" + o.toString());
+            }
+        };
+        stringPublishSubject.subscribe(subscriber1);
+        stringPublishSubject.subscribe(subscriber2);
+
+        stringPublishSubject.onNext("a");
+        
+     b、使用ConnectableObservable
      
+     ConnectableObservable<String> stringConnectableObservable = getMemoryObservable().publish();
+
+        Subscriber subscriber1 = new Subscriber() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+                System.out.println("subscriber1---->" + o.toString());
+                System.out.println("subscriber1---->" + System.currentTimeMillis());
+            }
+        };
+
+        Subscriber subscriber2 = new Subscriber() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+                System.out.println("subscriber2---->" + o.toString());
+                System.out.println("subscriber2---->" + System.currentTimeMillis());
+            }
+        };
+
+        stringConnectableObservable.subscribe(subscriber1);
+        stringConnectableObservable.subscribe(subscriber2);
+
+        stringConnectableObservable.connect();
     
         
