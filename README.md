@@ -324,7 +324,7 @@ Observable.just(1,2,3,4,5)
         在创建Observable的时候，传入了一个新建的OnSubscribe，然后再OnSubscribe中的call方法中，调用了call方法的参数（Subscriber）的onNext() onCompleted() 方法！！！
         注：此时的Subscriber（订阅者）并不知道是谁。
         
-        至此，观察者已经基本创建完成，这个观察者观察了一个Action，这个Action的具体动作是从网络获取数据。
+        至此，被观察者已经基本创建完成，这个被观察者是一个Action，这个Action的具体动作是从网络获取数据。
         那么，当Action动作完成，会把结果传递给不知道是谁的一个订阅者。。。
     
     4、订阅者的创建
@@ -387,5 +387,8 @@ Observable.just(1,2,3,4,5)
      hook.onSubscribeStart(this, onSubscribe)返回的就是Observable创建时构造方法中的参数OnSubcribe
      然后调用onSubscribe的call方法，参数就是我们subscribe方法中的参数Subscriber，接下来就一目了然了，第三步中那个不知道是谁的订阅者，就是通过subscribe方法传入的订阅者。
      至此，订阅者和观察就联系起来了。
+     
+     11、多个订阅者的实现原理
+     
     
         
