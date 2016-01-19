@@ -201,5 +201,191 @@ Observable.just(1,2,3,4,5)
    ObserveOn(AndroidSchedulers.mainThread())  指定观察者处理返回结果所在线程为ui线程
    
    9、在Android中使用场景
-    (1)、先检查本地是否有数据缓存，有的话直接返回，没有的话再请求网路数据
+    (1)、先检查本地是否有数据缓存，有的话直接返回，没有的话再请求网路数据  对应操作符为  contact(Observable1, Observable2 ...)
+    
+    (2)、多个接口并发请求，等所有结果返回再统一刷新页面   
+            这种情况需要分两种条件：a、不同接口返回数据格式相同，不需要做类型判断和转换，可以用merge(Observable1, Observable2 ...)
+
+                                    b、不同接口返回数据格式不同，需要经过处理再合并成新的数据结构，可以用zip(Observable1, Observable2,                                     new Fun2<firstResult, SecondResult, newResult>) 或combineLatest(Observable1, Observable2, new                                         Fun2<firstResult, SecondResult, newResult>)
+        对于combineLatest和zip，在网络请求的使用情景下，Observable只发射一次数据，二者是没有区别的。如果是Observable多次发射数据的话，combineLatest会有对不同实际发射出的事件的合并有不同的合并结果。而zip则是一一对应的。
+    (3)、一个任务的执行依赖上一个任务的返回结果，           
+        对应操作符为flatmap(object,Observable)，根据上一个任务的返回结构再次生成新的Observable
+    
+    (4)、界面按钮防止连续点击，对应操作符为throttleFisrt(时间段， 时间单位)，在指定时间段内只发送一次数据
+    
+    (5)、替代Handler实现定时器的操作符  timer(delaytime, time, timeUnit)  X秒后执行某操作
+    
+    (6)、替代Handler.postDelay实现文本搜索的操作符为debounce(400, TimeUnit.MILLISECONDS)
+    
+    (7)、替代Handler.postDelay实现倒计时的操作符为interval(1, TimeUnit.SECONDS) ，每隔1秒发射一次事件
+    
+    (8)、使用schedulePeriodically做轮询请求
+        Observable.create(new Observable.OnSubscribe<String>() {  
+            @Override  
+            public void call(final Subscriber<? super String> observer) {  
+  
+                Schedulers.newThread().createWorker()  
+                      .schedulePeriodically(new Action0() {  
+                          @Override  
+                          public void call() {  
+                              observer.onNext(doNetworkCallAndGetStringResult());  
+                          }  
+                      }, INITIAL_DELAY, POLLING_INTERVAL, TimeUnit.MILLISECONDS);  
+            }  
+        }).subscribe(new Action1<String>() {  
+            @Override  
+            public void call(String s) {  
+                log.d("polling….”));  
+            }  
+        })  
+        
+    (9)、注册界面信息填写完整，下一步操作按钮才点亮 combineLatest
+        Observable<CharSequence> _emailChangeObservable = RxTextView.textChanges(_email).skip(1);  
+        Observable<CharSequence> _passwordChangeObservable = RxTextView.textChanges(_password).skip(1);  
+        Observable<CharSequence>   _numberChangeObservable = RxTextView.textChanges(_number).skip(1);  
+  
+        Observable.combineLatest(_emailChangeObservable,  
+              _passwordChangeObservable,  
+              _numberChangeObservable,  
+              new Func3<CharSequence, CharSequence, CharSequence, Boolean>() {  
+                  @Override  
+                  public Boolean call(CharSequence newEmail,  
+                                      CharSequence newPassword,  
+                                      CharSequence newNumber) {  
+  
+                      Log.d("xiayong",newEmail+" "+newPassword+" "+newNumber);  
+                      boolean emailValid = !isEmpty(newEmail) &&  
+                                           EMAIL_ADDRESS.matcher(newEmail).matches();  
+                      if (!emailValid) {  
+                          _email.setError("Invalid Email!");  
+                      }  
+  
+                      boolean passValid = !isEmpty(newPassword) && newPassword.length() > 8;  
+                      if (!passValid) {  
+                          _password.setError("Invalid Password!");  
+                      }  
+  
+                      boolean numValid = !isEmpty(newNumber);  
+                      if (numValid) {  
+                          int num = Integer.parseInt(newNumber.toString());  
+                          numValid = num > 0 && num <= 100;  
+                      }  
+                      if (!numValid) {  
+                          _number.setError("Invalid Number!");  
+                      }  
+  
+                      return emailValid && passValid && numValid;  
+  
+                  }  
+              })//  
+              .subscribe(new Observer<Boolean>() {  
+                  @Override  
+                  public void onCompleted() {  
+                      log.d("completed");  
+                  }  
+  
+                  @Override  
+                  public void onError(Throwable e) {  
+                     log.d("Error");  
+                  }  
+  
+                  @Override  
+                  public void onNext(Boolean formValid) {  
+                     _btnValidIndicator.setEnabled(formValid);    
+                  }  
+              });  
+    
+    (10)、取缓存同时取网络数据，然后更新。 ？？？
+    
+10、源码剖析
+    1、protected Observable(OnSubscribe<T> f) {
+        this.onSubscribe = f;
+    }
+    Observable的构造方法，即保存构造方法中的参数OnSubscribe、
+    
+    2、public static interface OnSubscribe<T> extends Action1<Subscriber<? super T>> {
+        // cover for generics insanity
+    }
+    OnSubscribe是一个带一个参数的Action1，它的参数是一个Subscriber
+    
+    public interface Action1<T1> extends Action {
+        public void call(T1 t1);
+    }
+    Action1中有一个call方法，其中的参数就是就是第二步创建的Subscriber
+    
+    3、 Observable observable = Observable.create(new Observable.OnSubscribe<ShopList>() {
+            @Override
+            public void call(Subscriber<? super ShopList> subscriber) {
+                ShopList discountShops = companyRepository.getPayBillShops(offset, pageSize, regionId, longitude, latitude);
+                subscriber.onNext(discountShops);
+                subscriber.onCompleted();
+            }
+        })
+        在创建Observable的时候，传入了一个新建的OnSubscribe，然后再OnSubscribe中的call方法中，调用了call方法的参数（Subscriber）的onNext() onCompleted() 方法！！！
+        注：此时的Subscriber（订阅者）并不知道是谁。
+        
+        至此，观察者已经基本创建完成，这个观察者观察了一个Action，这个Action的具体动作是从网络获取数据。
+        那么，当Action动作完成，会把结果传递给不知道是谁的一个订阅者。。。
+    
+    4、订阅者的创建
+    
+        public final Subscription subscribe(Subscriber<? super T> subscriber) {
+        // validate and proceed
+        if (subscriber == null) {
+            throw new IllegalArgumentException("observer can not be null");
+        }
+        if (onSubscribe == null) {
+            throw new IllegalStateException("onSubscribe function can not be null.");
+            /*
+             * the subscribe function can also be overridden but generally that's not the appropriate approach
+             * so I won't mention that in the exception
+             */
+        }
+        
+        // new Subscriber so onStart it
+        subscriber.onStart();
+        
+        /*
+         * See https://github.com/ReactiveX/RxJava/issues/216 for discussion on "Guideline 6.4: Protect calls
+         * to user code from within an Observer"
+         */
+        // if not already wrapped
+        if (!(subscriber instanceof SafeSubscriber)) {
+            // assign to `observer` so we return the protected version
+            subscriber = new SafeSubscriber<T>(subscriber);
+        }
+
+        // The code below is exactly the same an unsafeSubscribe but not used because it would add a sigificent depth to alreay huge call stacks.
+        try {
+            // allow the hook to intercept and/or decorate
+            hook.onSubscribeStart(this, onSubscribe).call(subscriber);
+            return hook.onSubscribeReturn(subscriber);
+        } catch (Throwable e) {
+            // special handling for certain Throwable/Error/Exception types
+            Exceptions.throwIfFatal(e);
+            // if an unhandled error occurs executing the onSubscribe we will propagate it
+            try {
+                subscriber.onError(hook.onSubscribeError(e));
+            } catch (OnErrorNotImplementedException e2) {
+                // special handling when onError is not implemented ... we just rethrow
+                throw e2;
+            } catch (Throwable e2) {
+                // if this happens it means the onError itself failed (perhaps an invalid function implementation)
+                // so we are unable to propagate the error correctly and will just throw
+                RuntimeException r = new RuntimeException("Error occurred attempting to subscribe [" + e.getMessage() + "] and then again while trying to pass to onError.", e2);
+                // TODO could the hook be the cause of the error in the on error handling.
+                hook.onSubscribeError(r);
+                // TODO why aren't we throwing the hook's return value.
+                throw r;
+            }
+            return Subscriptions.unsubscribed();
+        }
+    }
+    
+    关键代码：
+     hook.onSubscribeStart(this, onSubscribe).call(subscriber);
+     hook.onSubscribeStart(this, onSubscribe)返回的就是Observable创建时构造方法中的参数OnSubcribe
+     然后调用onSubscribe的call方法，参数就是我们subscribe方法中的参数Subscriber，接下来就一目了然了，第三步中那个不知道是谁的订阅者，就是通过subscribe方法传入的订阅者。
+     至此，订阅者和观察就联系起来了。
+    
         
