@@ -20,7 +20,7 @@ A、创建一个Observable
 Observable<String> myObservable = Observable.create(
     new Observable.OnSubscribe<String>() {
          @Override
-public void call(Subscriber<? super String>sub) {
+           public void call(Subscriber<? super String>sub) {
            sub.onNext("Hello, world!");
            sub.onCompleted();
          }
@@ -44,7 +44,8 @@ Subscriber<String> mySubscriber = new Subscriber<String>() {
 C、将两者联系起来
 myObservable.subscribe(mySubscriber); // Outputs "Hello, world!"
 
-这是一个展示流程的例子：myObservable是事件源，mySubscriber是订阅者，通过Observable的subscribe方法，将事件输出给订阅者去消费。
+这是一个展示流程的例子：myObservable是事件源，mySubscriber是订阅者，
+通过Observable的subscribe方法，将事件输出给订阅者去消费。
 
 4、什么是Observable   Observer   Subscriber   Subscription
    
@@ -67,7 +68,8 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
 
 -----------balabala-------
 
-最最关键的几个概念：Observable   Observer    Action(Observer observer)   当Observable被subscribe（订阅）的时候，调用action的call方法
+最最关键的几个概念：Observable   Observer    Action(Observer observer)   
+当Observable被subscribe（订阅）的时候，调用action的call方法
 
 和观察者模式对比：  被观察者     观察者      被观察持有观察者的引用，当数据变化时通知观察者
 
@@ -140,7 +142,7 @@ Subscription topeMePlease = Observable.interval(3, TimeUnit.SECONDS)
             }
         });
 
-4、timer()  指定延迟时间指定间隔循环发射
+4、timer()  指定延迟时间指定间隔发射
 Observable.timer(3, 100, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
     @Override
     public void call(Long aLong) {
@@ -214,13 +216,25 @@ Observable.just(1,2,3,4,5)
    ObserveOn(AndroidSchedulers.mainThread())  指定观察者处理返回结果所在线程为ui线程
    
    9、在Android中使用场景
-    (1)、先检查本地是否有数据缓存，有的话直接返回，没有的话再请求网路数据  对应操作符为  contact(Observable1, Observable2 ...)
+    (1)、先检查本地是否有数据缓存，有的话直接返回，没有的话再请求网路数据  
+    对应操作符为  contact(Observable1, Observable2 ...)
     
     (2)、多个接口并发请求，等所有结果返回再统一刷新页面   
-            这种情况需要分两种条件：a、不同接口返回数据格式相同，不需要做类型判断和转换，可以用merge(Observable1, Observable2 ...)
+            这种情况需要分两种条件：a、不同接口返回数据格式相同，不需要做类型判断和转换，
+            可以用merge(Observable1, Observable2 ...)
 
-                                    b、不同接口返回数据格式不同，需要经过处理再合并成新的数据结构，可以用zip(Observable1, Observable2,                                     new Fun2<firstResult, SecondResult, newResult>) 或combineLatest(Observable1, Observable2, new                                         Fun2<firstResult, SecondResult, newResult>)
-        对于combineLatest和zip，在网络请求的使用情景下，Observable只发射一次数据，二者是没有区别的。如果是Observable多次发射数据的话，combineLatest会有对不同实际发射出的事件的合并有不同的合并结果。而zip则是一一对应的。
+            b、不同接口返回数据格式不同，需要经过处理再合并成新的数据结构，
+            可以用zip(Observable1, Observable2,                                     
+            new Fun2<firstResult, SecondResult, newResult>) 
+            或combineLatest(Observable1, Observable2, new                                         
+            Fun2<firstResult, SecondResult, newResult>)
+        对于combineLatest和zip，在网络请求的使用情景下，Observable只发射一次数据，二者是没有区别的。
+        如果是Observable多次发射数据的话，combineLatest会有对不同实际发射出的事件的合并有不同的合并结果。
+        而zip则是一一对应的。
+        
+        Observable1  1     2         3
+        Observable2  1  2    3 
+        
     (3)、一个任务的执行依赖上一个任务的返回结果，           
         对应操作符为flatmap(object,Observable)，根据上一个任务的返回结构再次生成新的Observable
     
