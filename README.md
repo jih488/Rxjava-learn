@@ -65,6 +65,15 @@ BehaviorSubject会首先向他的订阅者发送截至订阅前最新的一个�
 ReplaySubject会缓存它所订阅的所有数据，向任意一个订阅它的观察者重发。
 AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者。
 
+-----------balabala-------
+
+最最关键的几个概念：Observable   Observer    Action(Observer observer)   当Observable被subscribe（订阅）的时候，调用action的call方法
+
+和观察者模式对比：  被观察者     观察者      被观察持有观察者的引用，当数据变化时通知观察者
+
+-----------balabala-------
+
+
 7、操作符
    1、repeat()  对一个Observable重复发射数据
       例：
@@ -197,6 +206,9 @@ Observable.just(1,2,3,4,5)
    Schedulers.immedidate()  在当前线程立即执行指定的工作
    Schedulers.newThread()   为指定任务启动一个新的线程
    schedulers.tramppline()  把要执行的任务加入到当前线程任务队列中，调度器会顺序执行队列中的任务
+   
+   //Executors.newScheduledThreadPool(1, threadFactory);
+   //ScheduledExecutorService
 
    SubscribeOn(Schedulers.io())  指定任务工作线程
    ObserveOn(AndroidSchedulers.mainThread())  指定观察者处理返回结果所在线程为ui线程
