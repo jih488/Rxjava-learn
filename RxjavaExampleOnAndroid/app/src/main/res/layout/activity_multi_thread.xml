@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="15dp"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="测试多线程并发执行,每点击按钮一次都会开启一个后天线程任务,任务完成后将结果反馈到主线程."
+        />
+
+    <Button
+        android:id="@+id/btn_start_new_thread"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开启一个后台任务"
+        />
+
+    <TextView
+        android:id="@+id/tv_log"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="这是将显示任务执行流程"
+        />
+</LinearLayout>
