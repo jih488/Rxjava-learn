@@ -82,8 +82,6 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
 - 
    __repeat()  对一个Observable重复发射数据__例：
 
-
-
     Observable.just(1, 2).repeat(5).subscribe(new Subscriber<Integer>() {
         @Override
         public void onCompleted() {
@@ -102,9 +100,7 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
     });
     
 - 
-  __defer() 延迟Observable的创建直到观察者订阅__例：
-
-
+  __defer() 延迟Observable的创建直到观察者订阅__例
 
     private Observable<Long> getDeferObservable() {
         return Observable.defer(new Func0<Observable<Long>>() {
@@ -454,7 +450,7 @@ __注：此时的Subscriber（订阅者）并不知道是谁。__
             
         // new Subscriber so onStart it
         subscriber.onStart();
-        
+            
         /*
          * See https://github.com/ReactiveX/RxJava/issues/216 for discussion on "Guideline 6.4: Protect calls
          * to user code from within an Observer"
