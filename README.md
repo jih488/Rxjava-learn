@@ -383,15 +383,19 @@ __zip   合并多个Observable数据，生成新的数据__
     
 10. 源码剖析
     1.
+
     protected Observable(OnSubscribe<T> f) {
         this.onSubscribe = f;
     }
-        
+
+
     Observable的构造方法，即保存构造方法中的参数OnSubscribe、
     
-    2、public static interface OnSubscribe<T> extends Action1<Subscriber<? super T>> {
+    2.
+    
+    public static interface OnSubscribe<T> extends Action1<Subscriber<? super T>> {
         // cover for generics insanity
-        }
+    }
     
     OnSubscribe是一个带一个参数的Action1，它的参数是一个Subscriber
     
@@ -401,7 +405,9 @@ __zip   合并多个Observable数据，生成新的数据__
     
     Action1中有一个call方法，其中的参数就是就是第二步创建的Subscriber
     
-    3、 Observable observable = Observable.create(new Observable.OnSubscribe<ShopList>() {
+    3.
+    
+    Observable observable = Observable.create(new Observable.OnSubscribe<ShopList>() {
             @Override
             public void call(Subscriber<? super ShopList> subscriber) {
                 ShopList discountShops = companyRepository.getPayBillShops(offset, pageSize, regionId, longitude, latitude);
@@ -409,13 +415,14 @@ __zip   合并多个Observable数据，生成新的数据__
                 subscriber.onCompleted();
             }
         })
-        
+
+    
 在创建Observable的时候，传入了一个新建的OnSubscribe，然后再OnSubscribe中的call方法中，调用了call方法的参数（Subscriber）的onNext() onCompleted() 方法！！！
 
-    注：此时的Subscriber（订阅者）并不知道是谁。
-        
-    至此，被观察者已经基本创建完成，这个被观察者是一个Action，这个Action的具体动作是从网络获取数据。
-    那么，当Action动作完成，会把结果传递给不知道是谁的一个订阅者。。。
+__注：此时的Subscriber（订阅者）并不知道是谁。__
+    
+至此，被观察者已经基本创建完成，这个被观察者是一个Action，这个Action的具体动作是从网络获取数据。
+那么，当Action动作完成，会把结果传递给不知道是谁的一个订阅者。。。
     
     4、订阅者的创建
 
@@ -473,16 +480,17 @@ __zip   合并多个Observable数据，生成新的数据__
     }
     
     关键代码:
-     
-        hook.onSubscribeStart(this, onSubscribe).call(subscriber);
-        hook.onSubscribeStart(this, onSubscribe)返回的就是Observable创建时构造方法中的参数OnSubcribe
-     
-    然后调用onSubscribe的call方法，参数就是我们subscribe方法中的参数Subscriber，接下来就一目了然了，第三步中那个不知道是谁的订阅者，就是通过subscribe方法传入的订阅者。
+ 
+    hook.onSubscribeStart(this, onSubscribe).call(subscriber);
+    hook.onSubscribeStart(this, onSubscribe)返回的就是Observable创建时构造方法中的参数OnSubcribe
+    
+ 
+然后调用onSubscribe的call方法，参数就是我们subscribe方法中的参数Subscriber，接下来就一目了然了，第三步中那个不知道是谁的订阅者，就是通过subscribe方法传入的订阅者。
     至此，订阅者和观察就联系起来了。
      
-    11. 多个订阅者的两种实现方法
-     
-a、使用PublishSubject
+11. 多个订阅者的两种实现方法
+
+ a、使用PublishSubject
 
     PublishSubject<String> stringPublishSubject = PublishSubject.create();
         Subscriber subscriber1 = new Subscriber() {
@@ -529,14 +537,14 @@ b、使用ConnectableObservable
         Subscriber subscriber1 = new Subscriber() {
             @Override
             public void onCompleted() {
-
+            
             }
-
+            
             @Override
             public void onError(Throwable e) {
-
+            
             }
-
+            
             @Override
             public void onNext(Object o) {
                 System.out.println("subscriber1---->" + o.toString());
@@ -547,14 +555,14 @@ b、使用ConnectableObservable
         Subscriber subscriber2 = new Subscriber() {
             @Override
             public void onCompleted() {
-
+            
             }
-
+            
             @Override
             public void onError(Throwable e) {
-
+            
             }
-
+            
             @Override
             public void onNext(Object o) {
                 System.out.println("subscriber2---->" + o.toString());
@@ -567,8 +575,11 @@ b、使用ConnectableObservable
         
         stringConnectableObservable.connect();
 
+    
     12、操作符使用原理
+    
     关键方法：Observable lift(Operator)
+    
 
         public final <R> Observable<R> lift(final Operator<? extends R, ? super T> lift) {
             return new Observable<R>(new OnSubscribe<R>() {
