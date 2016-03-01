@@ -47,18 +47,19 @@
 这是一个展示流程的例子：myObservable是事件源，mySubscriber是订阅者，
 通过Observable的subscribe方法，将事件输出给订阅者去消费。
 
-4、什么是Observable   Observer   Subscriber   Subscription
+## 4、什么是Observable   Observer   Subscriber   Subscription
    
-   Observable  事件观察者或者事件生产者  这两种叫法是针对不同的对象而言的。第一：对于Subscriber它是事件的生产者，因为当使用subscribe方法对一个Observable添加一个订阅者的时候，这个时候会立即调用onSubscribe的call方法，将产生的一个字符串“Hello，world”这个事件交给订阅者的onNext()方法。第二：对于产生的这个字符串“Hello， world”而言，Observable就是一个事件观察者，它观察到了这个字符串的产生，然后将这个字符串产生的事件发送给了订阅者。
-   Observer和Subscriber是一个东西，Subscriber继承自Observer。
+Observable  事件观察者或者事件生产者  这两种叫法是针对不同的对象而言的。第一：对于Subscriber它是事件的生产者，因为当使用subscribe方法对一个Observable添加一个订阅者的时候，这个时候会立即调用onSubscribe的call方法，将产生的一个字符串“Hello，world”这个事件交给订阅者的onNext()方法。第二：对于产生的这个字符串“Hello， world”而言，Observable就是一个事件观察者，它观察到了这个字符串的产生，然后将这个字符串产生的事件发送给了订阅者。
 
-   Subscription是一个接口，提供了对一个Subscriber进行取消订阅（unSubscribe）和是否取消订阅（isUnsubscribe）的功能，它的具体实现就是Subscriber。上例中的第三步中subscribe方法将会返回一个Subscription，用户可以方便的取消订阅。
+Observer和Subscriber是一个东西，Subscriber继承自Observer。
 
-5、其他的创建Observable的方式
-     Observable.From(DataCollection) 使用一个数据集创建一个Observable，自动遍历发射集合中每条数据
-     Observable.just(a java method return )  根据一个或多个其他的方法返回值创建一个Observable，因为just可以接受1-9各参数，然后按照参数顺序发射他们。也可以是一个数据集合，像from方法，但他是发射整个列表。
+Subscription是一个接口，提供了对一个Subscriber进行取消订阅（unSubscribe）和是否取消订阅（isUnsubscribe）的功能，它的具体实现就是Subscriber。上例中的第三步中subscribe方法将会返回一个Subscription，用户可以方便的取消订阅。
 
-6、Subject = Observable + Observer （既是事件产生者，又是事件订阅者）
+## 5、其他的创建Observable的方式
+        Observable.From(DataCollection) 使用一个数据集创建一个Observable，自动遍历发射集合中每条数据
+        Observable.just(a java method return )  根据一个或多个其他的方法返回值创建一个Observable，因为just可以接受1-9各参数，然后按照参数顺序发射他们。也可以是一个数据集合，像from方法，但他是发射整个列表。
+
+## 6、Subject = Observable + Observer （既是事件产生者，又是事件订阅者）
      Subject有四种类型 PublishSubject  BehaviorSubject     ReplaySubject     AsyncSubject
 
 PublishSubject 是一个可以在任何时候发射事件的事件产生者，而不一定是在订阅者开始订阅的时候。
@@ -66,14 +67,14 @@ BehaviorSubject会首先向他的订阅者发送截至订阅前最新的一个�
 ReplaySubject会缓存它所订阅的所有数据，向任意一个订阅它的观察者重发。
 AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者。
 
------------balabala-------
+***
 
-最最关键的几个概念：Observable   Observer    Action(Observer observer)   
+最最关键的几个概念：**Observable   Observer    Action(Observer observer)   **
 当Observable被subscribe（订阅）的时候，调用action的call方法
 
 和观察者模式对比：  被观察者     观察者      被观察持有观察者的引用，当数据变化时通知观察者
 
------------balabala-------
+***
 
 
 7、操作符
