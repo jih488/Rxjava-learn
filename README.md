@@ -79,9 +79,10 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
 
 
 ## 7、操作符
-
 - 
    __repeat()  对一个Observable重复发射数据__例：
+
+
 
     Observable.just(1, 2).repeat(5).subscribe(new Subscriber<Integer>() {
         @Override
@@ -103,6 +104,8 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
 - 
   __defer() 延迟Observable的创建直到观察者订阅__例：
 
+
+
     private Observable<Long> getDeferObservable() {
         return Observable.defer(new Func0<Observable<Long>>() {
             @Override
@@ -113,6 +116,8 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
     }
 
 __每次生成新的observable__
+
+
 
     @Test
     public void testDefer() {
@@ -134,14 +139,14 @@ __interval() 在指定的时间间隔内重复数字 0到正无穷__
             .subscribe(new Observer<Long>() {
                 @Override
                 public void onCompleted() {
-    
+                
                 }
-
+                
                 @Override
                 public void onError(Throwable e) {
-
+                
                 }
-
+                
                 @Override
                 public void onNext(Long aLong) {
                     System.out.println("aLong---->"+aLong);
@@ -584,7 +589,6 @@ b、使用ConnectableObservable
 
     
 ## 12、操作符使用原理
-    
     关键方法：Observable lift(Operator)
     
 
