@@ -253,10 +253,15 @@ __zip   合并多个Observable数据，生成新的数据__
         __.io()  .computation()  .immediate()  .newThread()  .trampoline()__
         
    *1 Schedulers.io()  专用于io操作，但是大量的io操作会创建多个线程并占用内存
+   
    *2 Schedulers.computation()  计算工作默认的调度器，与io无关
+   
    *3 Schedulers.immedidate()  在当前线程立即执行指定的工作
+   
    *4 Schedulers.newThread()   为指定任务启动一个新的线程
+   
    *5 schedulers.tramppline()  把要执行的任务加入到当前线程任务队列中，调度器会顺序执行队列中的任务
+   
    
     Executors.newScheduledThreadPool(1, threadFactory);
     ScheduledExecutorService
@@ -265,11 +270,12 @@ __zip   合并多个Observable数据，生成新的数据__
     ObserveOn(AndroidSchedulers.mainThread())  指定观察者处理返回结果所在线程为ui线程
    
 ## 9、在Android中使用场景
-    (1). 先检查本地是否有数据缓存，有的话直接返回，没有的话再请求网路数据  
-        对应操作符为  contact(Observable1, Observable2 ...)
+
+(1). 先检查本地是否有数据缓存，有的话直接返回，没有的话再请求网路数据  
+    对应操作符为  contact(Observable1, Observable2 ...)
     
-    (2). 多个接口并发请求，等所有结果返回再统一刷新页面   
-            这种情况需要分两种条件：
+(2). 多个接口并发请求，等所有结果返回再统一刷新页面   
+    这种情况需要分两种条件：
             
     a、不同接口返回数据格式相同，不需要做类型判断和转换，可以用merge(Observable1, Observable2 ...)
             
@@ -282,25 +288,25 @@ __zip   合并多个Observable数据，生成新的数据__
         如果是Observable多次发射数据的话，combineLatest会有对不同实际发射出的事件的合并有不同的合并结果。
         而zip则是一一对应的。
         
-        Observable1  1     2         3
-        Observable2  1  2    3 
+        Observable1  1  2  3
+        Observable2  1  2  3 
         
-    (3)、一个任务的执行依赖上一个任务的返回结果，           
-        对应操作符为flatmap(object,Observable)，根据上一个任务的返回结构再次生成新的Observable
+(3). 一个任务的执行依赖上一个任务的返回结果,
+    对应操作符为flatmap(object,Observable)，根据上一个任务的返回结构再次生成新的Observable
     
-    (4)、界面按钮防止连续点击，对应操作符为throttleFisrt(时间段， 时间单位)，在指定时间段内只发送一次数据
+(4). 界面按钮防止连续点击，对应操作符为throttleFisrt(时间段， 时间单位)，在指定时间段内只发送一次数据
     
-    (5)、替代Handler实现定时器的操作符  timer(delaytime, time, timeUnit)  X秒后执行某操作
+(5). 替代Handler实现定时器的操作符  timer(delaytime, time, timeUnit)  X秒后执行某操作
     
-    (6)、替代Handler.postDelay实现文本搜索的操作符为debounce(400, TimeUnit.MILLISECONDS)
+(6). 替代Handler.postDelay实现文本搜索的操作符为debounce(400, TimeUnit.MILLISECONDS)
     
-    (7)、替代Handler.postDelay实现倒计时的操作符为interval(1, TimeUnit.SECONDS) ，每隔1秒发射一次事件
+(7). 替代Handler.postDelay实现倒计时的操作符为interval(1, TimeUnit.SECONDS) ，每隔1秒发射一次事件
     
-    (8)、使用schedulePeriodically做轮询请求
+(8). 使用schedulePeriodically做轮询请求
+
         Observable.create(new Observable.OnSubscribe<String>() {  
             @Override  
             public void call(final Subscriber<? super String> observer) {  
-  
                 Schedulers.newThread().createWorker()  
                       .schedulePeriodically(new Action0() {  
                           @Override  
@@ -315,12 +321,13 @@ __zip   合并多个Observable数据，生成新的数据__
                 log.d("polling….”));  
             }  
         })  
-        
-    (9)、注册界面信息填写完整，下一步操作按钮才点亮 combineLatest
+    
+(9)、注册界面信息填写完整，下一步操作按钮才点亮 combineLatest
+
         Observable<CharSequence> _emailChangeObservable = RxTextView.textChanges(_email).skip(1);  
         Observable<CharSequence> _passwordChangeObservable = RxTextView.textChanges(_password).skip(1);  
         Observable<CharSequence>   _numberChangeObservable = RxTextView.textChanges(_number).skip(1);  
-  
+        
         Observable.combineLatest(_emailChangeObservable,  
               _passwordChangeObservable,  
               _numberChangeObservable,  
@@ -329,19 +336,19 @@ __zip   合并多个Observable数据，生成新的数据__
                   public Boolean call(CharSequence newEmail,  
                                       CharSequence newPassword,  
                                       CharSequence newNumber) {  
-  
+                                      
                       Log.d("xiayong",newEmail+" "+newPassword+" "+newNumber);  
                       boolean emailValid = !isEmpty(newEmail) &&  
                                            EMAIL_ADDRESS.matcher(newEmail).matches();  
                       if (!emailValid) {  
                           _email.setError("Invalid Email!");  
                       }  
-  
+                      
                       boolean passValid = !isEmpty(newPassword) && newPassword.length() > 8;  
                       if (!passValid) {  
                           _password.setError("Invalid Password!");  
                       }  
-  
+                      
                       boolean numValid = !isEmpty(newNumber);  
                       if (numValid) {  
                           int num = Integer.parseInt(newNumber.toString());  
@@ -350,9 +357,9 @@ __zip   合并多个Observable数据，生成新的数据__
                       if (!numValid) {  
                           _number.setError("Invalid Number!");  
                       }  
-  
+                      
                       return emailValid && passValid && numValid;  
-  
+                      
                   }  
               })//  
               .subscribe(new Observer<Boolean>() {  
@@ -360,24 +367,26 @@ __zip   合并多个Observable数据，生成新的数据__
                   public void onCompleted() {  
                       log.d("completed");  
                   }  
-  
+                  
                   @Override  
                   public void onError(Throwable e) {  
                      log.d("Error");  
                   }  
-  
+                  
                   @Override  
                   public void onNext(Boolean formValid) {  
                      _btnValidIndicator.setEnabled(formValid);    
                   }  
               });  
     
-    (10)、取缓存同时取网络数据，然后更新。 ？？？
+(10)、取缓存同时取网络数据，然后更新。 ？？？
     
-10、源码剖析
+10. 源码剖析
+
     1、protected Observable(OnSubscribe<T> f) {
         this.onSubscribe = f;
-    }
+        }
+        
     Observable的构造方法，即保存构造方法中的参数OnSubscribe、
     
     2、public static interface OnSubscribe<T> extends Action1<Subscriber<? super T>> {
