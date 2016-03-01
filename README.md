@@ -101,7 +101,7 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
         }
     });
 
-+
+-
    __defer() 延迟Observable的创建直到观察者订阅__
 例：
     
@@ -129,7 +129,7 @@ __每次生成新的observable__
         }
     }
 
-*3 
+- 
 __interval() 在指定的时间间隔内重复数字 0到正无穷__
 
     Subscription topeMePlease = Observable.interval(3, TimeUnit.SECONDS)
@@ -150,7 +150,7 @@ __interval() 在指定的时间间隔内重复数字 0到正无穷__
                 }
             });
 
-*4
+-
 __timer()  指定延迟时间指定间隔发射__
 
     Observable.timer(3, 100, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
@@ -160,56 +160,56 @@ __timer()  指定延迟时间指定间隔发射__
         }
     });
 
-*5
+-
 __filter()  过滤出符合要求的数据__
 
     filter((appInfo) -> appInfo.getName().startWith(“C”)) //过滤出C开头的应用名称
 
-*6
+-
 __take()  指定原始序列中的前几条数据发射__
     take(3)
     
-*7
+-
 __takeLast()  指定原始序列中的最后几条数据发射__
     takeLast(3)
     
-*8
+-
 __distinct()  去除重复数据  可以用来防止界面控件重复点击__
 
-*9
+-
 __distinctUntilChanged()  去除与上一个重复的值__
 
-*10
+-
 __first()和last() 发射原始序列中的第一个或最后一个值__
 
-*11
+-
 __firstOrDefault()和lastOrDefault()  当观测序列完成时发送默认值__
 
-*12
+-
 __skip()和skipLast()   不发射前N个值或者后N个值__
 
-*13
+-
 __ElementAt()   elementAtOrDefault()     发射指定位置的元素 ，如果没有就发送默认值__
 
-*14
+-
 __sample(30, TimeUnit.SECONDS)  在指定时间间隔内由Observable发射最近一次的数值  再加一个throttleFirst()就是发射第一个而不是最近一个元素__
 
-*15
+-
 __timeout()   每隔一定时间发射至少一次数据，如果在指定时间间隔内没有得到一个值则发送一个错误__
 
-*16
+-
 __debounce()   过滤掉由Observable发射的速率过快的数据__
 
-*17
+-
 __map  指定一个fun对象，然后将它应用到每一个由Observable发射的值上__
 
-*18
+-
 __flatMap()  根据上一个Observable发射的数据生成新的Observable，注意新产生的Observable是平铺的，也就是说最终得到数据顺序是不定的，并且有一个产生error，此次调用就会结束__
 
-*19
+-
 __concatMap()   解决的flatMap()的交叉问题，能够把发射的值连续在一起，而不是合并他们__
 
-*20
+-
 __scan()   累加器  对原始Observable发射的每一项数据都应用一个函数，计算出函数的结果值，并将该值填回可观测序列，等待和下一次发射的数据一起使用。__
 
     例：
@@ -236,38 +236,44 @@ __输出结果为：1   3  6  10  15__
 （这个操作符可用来对数据进行排序）
 
 
-*21
+-
 __groupBy()  将原Observable变换成哼一个发射Observables的新的Observable。他们中的每一个新的Observable都发射一组指定的数据__
 
-*22
+-
 __buffer()    将原Observable变换一个新的Observable，这个新的Observable每次发射一组列表而不是一个个发射__
 
-*23
+-
 __merge()   多个Observable合并成一个最终发射的Observable  （多个Observable发射的数据类型一般相同）__
 
-*24
+-
 __zip   合并多个Observable数据，生成新的数据__
 
 ## 8、调度器
-    RxJava提供了5种调度器：
-        __.io()  .computation()  .immediate()  .newThread()  .trampoline()__
+
+RxJava提供了5种调度器：
+    __.io()  .computation()  .immediate()  .newThread()  .trampoline()__
         
-   *1 Schedulers.io()  专用于io操作，但是大量的io操作会创建多个线程并占用内存
+-
+Schedulers.io()  专用于io操作，但是大量的io操作会创建多个线程并占用内存
    
-   *2 Schedulers.computation()  计算工作默认的调度器，与io无关
+-
+Schedulers.computation()  计算工作默认的调度器，与io无关
    
-   *3 Schedulers.immedidate()  在当前线程立即执行指定的工作
+-
+Schedulers.immedidate()  在当前线程立即执行指定的工作
    
-   *4 Schedulers.newThread()   为指定任务启动一个新的线程
+-
+Schedulers.newThread()   为指定任务启动一个新的线程
    
-   *5 schedulers.tramppline()  把要执行的任务加入到当前线程任务队列中，调度器会顺序执行队列中的任务
+-
+schedulers.tramppline()  把要执行的任务加入到当前线程任务队列中，调度器会顺序执行队列中的任务
    
    
-    Executors.newScheduledThreadPool(1, threadFactory);
-    ScheduledExecutorService
-        
-    SubscribeOn(Schedulers.io())  指定任务工作线程
-    ObserveOn(AndroidSchedulers.mainThread())  指定观察者处理返回结果所在线程为ui线程
+Executors.newScheduledThreadPool(1, threadFactory);
+ScheduledExecutorService
+    
+SubscribeOn(Schedulers.io())  指定任务工作线程
+ObserveOn(AndroidSchedulers.mainThread())  指定观察者处理返回结果所在线程为ui线程
    
 ## 9、在Android中使用场景
 
@@ -276,9 +282,9 @@ __zip   合并多个Observable数据，生成新的数据__
     
 (2). 多个接口并发请求，等所有结果返回再统一刷新页面   
     这种情况需要分两种条件：
-            
+
     a、不同接口返回数据格式相同，不需要做类型判断和转换，可以用merge(Observable1, Observable2 ...)
-            
+        
     b、不同接口返回数据格式不同，需要经过处理再合并成新的数据结构，可以用
         zip(Observable1, Observable2,                                     
         new Fun2<firstResult, SecondResult, newResult>) 
@@ -290,7 +296,8 @@ __zip   合并多个Observable数据，生成新的数据__
         
         Observable1  1  2  3
         Observable2  1  2  3 
-        
+
+    
 (3). 一个任务的执行依赖上一个任务的返回结果,
     对应操作符为flatmap(object,Observable)，根据上一个任务的返回结构再次生成新的Observable
     
@@ -381,41 +388,37 @@ __zip   合并多个Observable数据，生成新的数据__
     
 (10)、取缓存同时取网络数据，然后更新。 ？？？
     
-10. 源码剖析
-    1.
+## 10. 源码剖析
+1.
 
     protected Observable(OnSubscribe<T> f) {
         this.onSubscribe = f;
     }
-
-
-    Observable的构造方法，即保存构造方法中的参数OnSubscribe、
     
-    2.
-    
+Observable的构造方法，即保存构造方法中的参数OnSubscribe
+2. 
     public static interface OnSubscribe<T> extends Action1<Subscriber<? super T>> {
         // cover for generics insanity
     }
     
-    OnSubscribe是一个带一个参数的Action1，它的参数是一个Subscriber
+OnSubscribe是一个带一个参数的Action1，它的参数是一个Subscriber
     
     public interface Action1<T1> extends Action {
         public void call(T1 t1);
     }
     
-    Action1中有一个call方法，其中的参数就是就是第二步创建的Subscriber
+Action1中有一个call方法，其中的参数就是就是第二步创建的Subscriber
     
     3.
     
     Observable observable = Observable.create(new Observable.OnSubscribe<ShopList>() {
-            @Override
-            public void call(Subscriber<? super ShopList> subscriber) {
-                ShopList discountShops = companyRepository.getPayBillShops(offset, pageSize, regionId, longitude, latitude);
-                subscriber.onNext(discountShops);
-                subscriber.onCompleted();
-            }
-        })
-
+        @Override
+        public void call(Subscriber<? super ShopList> subscriber) {
+            ShopList discountShops = companyRepository.getPayBillShops(offset, pageSize, regionId, longitude, latitude);
+            subscriber.onNext(discountShops);
+            subscriber.onCompleted();
+        }
+    });
     
 在创建Observable的时候，传入了一个新建的OnSubscribe，然后再OnSubscribe中的call方法中，调用了call方法的参数（Subscriber）的onNext() onCompleted() 方法！！！
 
@@ -480,14 +483,13 @@ __注：此时的Subscriber（订阅者）并不知道是谁。__
     }
     
     关键代码:
- 
-    hook.onSubscribeStart(this, onSubscribe).call(subscriber);
-    hook.onSubscribeStart(this, onSubscribe)返回的就是Observable创建时构造方法中的参数OnSubcribe
+__hook.onSubscribeStart(this, onSubscribe).call(subscriber);__
+__hook.onSubscribeStart(this, onSubscribe)返回的就是Observable创建时构造方法中的参数OnSubcribe__
     
  
 然后调用onSubscribe的call方法，参数就是我们subscribe方法中的参数Subscriber，接下来就一目了然了，第三步中那个不知道是谁的订阅者，就是通过subscribe方法传入的订阅者。
-    至此，订阅者和观察就联系起来了。
-     
+至此，订阅者和观察就联系起来了。
+ 
 11. 多个订阅者的两种实现方法
 
  a、使用PublishSubject
