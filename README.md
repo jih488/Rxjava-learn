@@ -396,21 +396,25 @@ ObserveOn(AndroidSchedulers.mainThread())  指定观察者处理返回结果所�
     }
     
 Observable的构造方法，即保存构造方法中的参数OnSubscribe
+
 2. 
+
+
+
     public static interface OnSubscribe<T> extends Action1<Subscriber<? super T>> {
         // cover for generics insanity
     }
     
 OnSubscribe是一个带一个参数的Action1，它的参数是一个Subscriber
-    
+
     public interface Action1<T1> extends Action {
         public void call(T1 t1);
     }
-    
+
 Action1中有一个call方法，其中的参数就是就是第二步创建的Subscriber
-    
-    3.
-    
+
+3.
+
     Observable observable = Observable.create(new Observable.OnSubscribe<ShopList>() {
         @Override
         public void call(Subscriber<? super ShopList> subscriber) {
@@ -427,9 +431,10 @@ __注：此时的Subscriber（订阅者）并不知道是谁。__
 至此，被观察者已经基本创建完成，这个被观察者是一个Action，这个Action的具体动作是从网络获取数据。
 那么，当Action动作完成，会把结果传递给不知道是谁的一个订阅者。。。
     
-    4、订阅者的创建
+4. 订阅者的创建
 
-        public final Subscription subscribe(Subscriber<? super T> subscriber) {
+
+    public final Subscription subscribe(Subscriber<? super T> subscriber) {
         // validate and proceed
         if (subscriber == null) {
             throw new IllegalArgumentException("observer can not be null");
@@ -441,7 +446,7 @@ __注：此时的Subscriber（订阅者）并不知道是谁。__
              * so I won't mention that in the exception
              */
         }
-        
+            
         // new Subscriber so onStart it
         subscriber.onStart();
         
@@ -454,7 +459,7 @@ __注：此时的Subscriber（订阅者）并不知道是谁。__
             // assign to `observer` so we return the protected version
             subscriber = new SafeSubscriber<T>(subscriber);
         }
-        
+            
         // The code below is exactly the same an unsafeSubscribe but not used because it would add a sigificent depth to alreay huge call stacks.
         try {
             // allow the hook to intercept and/or decorate
@@ -472,7 +477,7 @@ __注：此时的Subscriber（订阅者）并不知道是谁。__
             } catch (Throwable e2) {
                 // if this happens it means the onError itself failed (perhaps an invalid function implementation)
                 // so we are unable to propagate the error correctly and will just throw
-                RuntimeException r = new RuntimeException("Error occurred attempting to subscribe [" + e.getMessage() + "] and then again while trying to pass to onError.", e2);
+                RuntimeException r = new RuntimeException("Error occurred attempting to subscribe [" + e.getMessage() + "] and the again while trying to pass to onError.", e2);
                 // TODO could the hook be the cause of the error in the on error handling.
                 hook.onSubscribeError(r);
                 // TODO why aren't we throwing the hook's return value.
@@ -490,7 +495,7 @@ __hook.onSubscribeStart(this, onSubscribe)返回的就是Observable创建时构�
 然后调用onSubscribe的call方法，参数就是我们subscribe方法中的参数Subscriber，接下来就一目了然了，第三步中那个不知道是谁的订阅者，就是通过subscribe方法传入的订阅者。
 至此，订阅者和观察就联系起来了。
  
-11. 多个订阅者的两种实现方法
+## 11、 多个订阅者的两种实现方法
 
  a、使用PublishSubject
 
@@ -578,7 +583,7 @@ b、使用ConnectableObservable
         stringConnectableObservable.connect();
 
     
-    12、操作符使用原理
+## 12、操作符使用原理
     
     关键方法：Observable lift(Operator)
     
