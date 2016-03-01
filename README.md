@@ -28,18 +28,18 @@
     }); `
 
 #### B、创建一个Subscriber
-` Subscriber<String> mySubscriber = new Subscriber<String>() {
-     @Override
-     public void onNext(String s) {
-          System.out.println(s);
-     }
-     @Override
-     public void onCompleted() {
-     }
-     @Override
-     public void onError(Throwable e) {
-     }
-}; `
+` Subscriber<String> mySubscriber = new Subscriber<String>() {`
+     `@Override`
+     `public void onNext(String s) {`
+          `System.out.println(s);`
+     `}`
+     `@Override`
+     `public void onCompleted() {`
+     `}`
+     `@Override`
+     `public void onError(Throwable e) {`
+     `}`
+`}; `
 
 C、将两者联系起来
 myObservable.subscribe(mySubscriber); // Outputs "Hello, world!"
