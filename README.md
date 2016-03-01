@@ -28,21 +28,21 @@
         });
 
 #### B、创建一个Subscriber
-` Subscriber<String> mySubscriber = new Subscriber<String>() {
-     @Override
-     public void onNext(String s) {
-          System.out.println(s);
-     }
-     @Override
-     public void onCompleted() {
-     }
-     @Override
-     public void onError(Throwable e) {
-     }
-}; `
+    Subscriber<String> mySubscriber = new Subscriber<String>() {
+        @Override
+        public void onNext(String s) {
+            System.out.println(s);
+        }
+        @Override
+        public void onCompleted() {
+        }
+        @Override
+        public void onError(Throwable e) {
+        }
+    };
 
-C、将两者联系起来
-myObservable.subscribe(mySubscriber); // Outputs "Hello, world!"
+#### C、将两者联系起来
+    myObservable.subscribe(mySubscriber); // Outputs "Hello, world!"
 
 这是一个展示流程的例子：myObservable是事件源，mySubscriber是订阅者，
 通过Observable的subscribe方法，将事件输出给订阅者去消费。
