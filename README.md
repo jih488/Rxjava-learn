@@ -382,21 +382,23 @@ __zip   合并多个Observable数据，生成新的数据__
 (10)、取缓存同时取网络数据，然后更新。 ？？？
     
 10. 源码剖析
-
-    1、protected Observable(OnSubscribe<T> f) {
+    1.
+    protected Observable(OnSubscribe<T> f) {
         this.onSubscribe = f;
-        }
+    }
         
     Observable的构造方法，即保存构造方法中的参数OnSubscribe、
     
     2、public static interface OnSubscribe<T> extends Action1<Subscriber<? super T>> {
         // cover for generics insanity
-    }
+        }
+    
     OnSubscribe是一个带一个参数的Action1，它的参数是一个Subscriber
     
     public interface Action1<T1> extends Action {
         public void call(T1 t1);
     }
+    
     Action1中有一个call方法，其中的参数就是就是第二步创建的Subscriber
     
     3、 Observable observable = Observable.create(new Observable.OnSubscribe<ShopList>() {
@@ -407,14 +409,16 @@ __zip   合并多个Observable数据，生成新的数据__
                 subscriber.onCompleted();
             }
         })
-        在创建Observable的时候，传入了一个新建的OnSubscribe，然后再OnSubscribe中的call方法中，调用了call方法的参数（Subscriber）的onNext() onCompleted() 方法！！！
-        注：此时的Subscriber（订阅者）并不知道是谁。
         
-        至此，被观察者已经基本创建完成，这个被观察者是一个Action，这个Action的具体动作是从网络获取数据。
-        那么，当Action动作完成，会把结果传递给不知道是谁的一个订阅者。。。
+在创建Observable的时候，传入了一个新建的OnSubscribe，然后再OnSubscribe中的call方法中，调用了call方法的参数（Subscriber）的onNext() onCompleted() 方法！！！
+
+    注：此时的Subscriber（订阅者）并不知道是谁。
+        
+    至此，被观察者已经基本创建完成，这个被观察者是一个Action，这个Action的具体动作是从网络获取数据。
+    那么，当Action动作完成，会把结果传递给不知道是谁的一个订阅者。。。
     
     4、订阅者的创建
-    
+
         public final Subscription subscribe(Subscriber<? super T> subscriber) {
         // validate and proceed
         if (subscriber == null) {
@@ -440,7 +444,7 @@ __zip   合并多个Observable数据，生成新的数据__
             // assign to `observer` so we return the protected version
             subscriber = new SafeSubscriber<T>(subscriber);
         }
-
+        
         // The code below is exactly the same an unsafeSubscribe but not used because it would add a sigificent depth to alreay huge call stacks.
         try {
             // allow the hook to intercept and/or decorate
@@ -468,43 +472,47 @@ __zip   合并多个Observable数据，生成新的数据__
         }
     }
     
-    关键代码：
-     hook.onSubscribeStart(this, onSubscribe).call(subscriber);
-     hook.onSubscribeStart(this, onSubscribe)返回的就是Observable创建时构造方法中的参数OnSubcribe
-     然后调用onSubscribe的call方法，参数就是我们subscribe方法中的参数Subscriber，接下来就一目了然了，第三步中那个不知道是谁的订阅者，就是通过subscribe方法传入的订阅者。
-     至此，订阅者和观察就联系起来了。
+    关键代码:
      
-     11、多个订阅者的两种实现方法
-      a、 使用PublishSubject
-      PublishSubject<String> stringPublishSubject = PublishSubject.create();
+        hook.onSubscribeStart(this, onSubscribe).call(subscriber);
+        hook.onSubscribeStart(this, onSubscribe)返回的就是Observable创建时构造方法中的参数OnSubcribe
+     
+    然后调用onSubscribe的call方法，参数就是我们subscribe方法中的参数Subscriber，接下来就一目了然了，第三步中那个不知道是谁的订阅者，就是通过subscribe方法传入的订阅者。
+    至此，订阅者和观察就联系起来了。
+     
+    11. 多个订阅者的两种实现方法
+     
+a、使用PublishSubject
+
+    PublishSubject<String> stringPublishSubject = PublishSubject.create();
         Subscriber subscriber1 = new Subscriber() {
             @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Object o) {
-                System.out.println("subscriber1---->" + o.toString());
-            }
-        };
-
+                public void onCompleted() {
+                 
+                }
+                    
+                @Override
+                public void onError(Throwable e) {
+                    
+                }
+                    
+                @Override
+                public void onNext(Object o) {
+                    System.out.println("subscriber1---->" + o.toString());
+                }
+            };
+            
         Subscriber subscriber2 = new Subscriber() {
             @Override
             public void onCompleted() {
-
+                
             }
-
+                
             @Override
             public void onError(Throwable e) {
-
+                
             }
-
+            
             @Override
             public void onNext(Object o) {
                 System.out.println("subscriber2---->" + o.toString());
@@ -512,13 +520,12 @@ __zip   合并多个Observable数据，生成新的数据__
         };
         stringPublishSubject.subscribe(subscriber1);
         stringPublishSubject.subscribe(subscriber2);
-
         stringPublishSubject.onNext("a");
-        
-     b、使用ConnectableObservable
-     
-     ConnectableObservable<String> stringConnectableObservable = getMemoryObservable().publish();
 
+b、使用ConnectableObservable
+
+     ConnectableObservable<String> stringConnectableObservable = getMemoryObservable().publish();
+     
         Subscriber subscriber1 = new Subscriber() {
             @Override
             public void onCompleted() {
@@ -536,7 +543,7 @@ __zip   合并多个Observable数据，生成新的数据__
                 System.out.println("subscriber1---->" + System.currentTimeMillis());
             }
         };
-
+        
         Subscriber subscriber2 = new Subscriber() {
             @Override
             public void onCompleted() {
@@ -554,42 +561,43 @@ __zip   合并多个Observable数据，生成新的数据__
                 System.out.println("subscriber2---->" + System.currentTimeMillis());
             }
         };
-
+        
         stringConnectableObservable.subscribe(subscriber1);
         stringConnectableObservable.subscribe(subscriber2);
-
+        
         stringConnectableObservable.connect();
-    
+
     12、操作符使用原理
-        关键方法：Observable lift(Operator)
+    关键方法：Observable lift(Operator)
+
         public final <R> Observable<R> lift(final Operator<? extends R, ? super T> lift) {
-        return new Observable<R>(new OnSubscribe<R>() {
-            @Override
-            public void call(Subscriber<? super R> o) {
-                try {
-                    Subscriber<? super T> st = hook.onLift(lift).call(o);
+            return new Observable<R>(new OnSubscribe<R>() {
+                @Override
+                public void call(Subscriber<? super R> o) {
                     try {
-                        // new Subscriber created and being subscribed with so 'onStart' it
-                        st.onStart();
-                        onSubscribe.call(st);
+                        Subscriber<? super T> st = hook.onLift(lift).call(o);
+                        try {
+                            // new Subscriber created and being subscribed with so 'onStart' it
+                            st.onStart();
+                            onSubscribe.call(st);
+                        } catch (Throwable e) {
+                            // localized capture of errors rather than it skipping all operators 
+                            // and ending up in the try/catch of the subscribe method which then
+                            // prevents onErrorResumeNext and other similar approaches to error handling
+                            if (e instanceof OnErrorNotImplementedException) {
+                                throw (OnErrorNotImplementedException) e;
+                            }
+                            st.onError(e);
+                        }
                     } catch (Throwable e) {
-                        // localized capture of errors rather than it skipping all operators 
-                        // and ending up in the try/catch of the subscribe method which then
-                        // prevents onErrorResumeNext and other similar approaches to error handling
                         if (e instanceof OnErrorNotImplementedException) {
                             throw (OnErrorNotImplementedException) e;
                         }
-                        st.onError(e);
+                        // if the lift function failed all we can do is pass the error to the final Subscriber
+                        // as we don't have the operator available to us
+                        o.onError(e);
                     }
-                } catch (Throwable e) {
-                    if (e instanceof OnErrorNotImplementedException) {
-                        throw (OnErrorNotImplementedException) e;
-                    }
-                    // if the lift function failed all we can do is pass the error to the final Subscriber
-                    // as we don't have the operator available to us
-                    o.onError(e);
                 }
-            }
-        });
-    }
-        
+            });
+        }
+
