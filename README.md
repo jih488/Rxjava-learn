@@ -80,7 +80,7 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
 
 ## 7、操作符
 
--
+- 
    __repeat()  对一个Observable重复发射数据__
 例：
     
@@ -101,7 +101,7 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
         }
     });
 
--
+- 
    __defer() 延迟Observable的创建直到观察者订阅__
 例：
     
@@ -150,7 +150,7 @@ __interval() 在指定的时间间隔内重复数字 0到正无穷__
                 }
             });
 
--
+- 
 __timer()  指定延迟时间指定间隔发射__
 
     Observable.timer(3, 100, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
@@ -160,56 +160,56 @@ __timer()  指定延迟时间指定间隔发射__
         }
     });
 
--
+- 
 __filter()  过滤出符合要求的数据__
 
     filter((appInfo) -> appInfo.getName().startWith(“C”)) //过滤出C开头的应用名称
 
--
+- 
 __take()  指定原始序列中的前几条数据发射__
     take(3)
     
--
+- 
 __takeLast()  指定原始序列中的最后几条数据发射__
     takeLast(3)
     
--
+- 
 __distinct()  去除重复数据  可以用来防止界面控件重复点击__
 
--
+- 
 __distinctUntilChanged()  去除与上一个重复的值__
 
--
+- 
 __first()和last() 发射原始序列中的第一个或最后一个值__
 
 -
 __firstOrDefault()和lastOrDefault()  当观测序列完成时发送默认值__
 
--
+- 
 __skip()和skipLast()   不发射前N个值或者后N个值__
 
--
+- 
 __ElementAt()   elementAtOrDefault()     发射指定位置的元素 ，如果没有就发送默认值__
 
--
+- 
 __sample(30, TimeUnit.SECONDS)  在指定时间间隔内由Observable发射最近一次的数值  再加一个throttleFirst()就是发射第一个而不是最近一个元素__
 
--
+- 
 __timeout()   每隔一定时间发射至少一次数据，如果在指定时间间隔内没有得到一个值则发送一个错误__
 
--
+- 
 __debounce()   过滤掉由Observable发射的速率过快的数据__
 
--
+- 
 __map  指定一个fun对象，然后将它应用到每一个由Observable发射的值上__
 
--
+- 
 __flatMap()  根据上一个Observable发射的数据生成新的Observable，注意新产生的Observable是平铺的，也就是说最终得到数据顺序是不定的，并且有一个产生error，此次调用就会结束__
 
--
+- 
 __concatMap()   解决的flatMap()的交叉问题，能够把发射的值连续在一起，而不是合并他们__
 
--
+- 
 __scan()   累加器  对原始Observable发射的每一项数据都应用一个函数，计算出函数的结果值，并将该值填回可观测序列，等待和下一次发射的数据一起使用。__
 
     例：
@@ -236,16 +236,16 @@ __输出结果为：1   3  6  10  15__
 （这个操作符可用来对数据进行排序）
 
 
--
+- 
 __groupBy()  将原Observable变换成哼一个发射Observables的新的Observable。他们中的每一个新的Observable都发射一组指定的数据__
 
--
+- 
 __buffer()    将原Observable变换一个新的Observable，这个新的Observable每次发射一组列表而不是一个个发射__
 
--
+- 
 __merge()   多个Observable合并成一个最终发射的Observable  （多个Observable发射的数据类型一般相同）__
 
--
+- 
 __zip   合并多个Observable数据，生成新的数据__
 
 ## 8、调度器
@@ -253,19 +253,19 @@ __zip   合并多个Observable数据，生成新的数据__
 RxJava提供了5种调度器：
     __.io()  .computation()  .immediate()  .newThread()  .trampoline()__
         
--
+- 
 Schedulers.io()  专用于io操作，但是大量的io操作会创建多个线程并占用内存
    
--
+- 
 Schedulers.computation()  计算工作默认的调度器，与io无关
    
--
+- 
 Schedulers.immedidate()  在当前线程立即执行指定的工作
    
--
+- 
 Schedulers.newThread()   为指定任务启动一个新的线程
    
--
+- 
 schedulers.tramppline()  把要执行的任务加入到当前线程任务队列中，调度器会顺序执行队列中的任务
    
    
