@@ -81,30 +81,28 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
 ## 7、操作符
 
 - 
-   __repeat()  对一个Observable重复发射数据__
-例：
-    
+   __repeat()  对一个Observable重复发射数据__例：
+
     Observable.just(1, 2).repeat(5).subscribe(new Subscriber<Integer>() {
         @Override
         public void onCompleted() {
-    
+            
         }
-
+            
         @Override
         public void onError(Throwable e) {
-
+            
         }
-
+            
         @Override
         public void onNext(Integer integer) {
             System.out.println("integer------>" + integer);
         }
     });
-
-- 
-   __defer() 延迟Observable的创建直到观察者订阅__
-例：
     
+- 
+  __defer() 延迟Observable的创建直到观察者订阅__例：
+
     private Observable<Long> getDeferObservable() {
         return Observable.defer(new Func0<Observable<Long>>() {
             @Override
@@ -167,10 +165,12 @@ __filter()  过滤出符合要求的数据__
 
 - 
 __take()  指定原始序列中的前几条数据发射__
+
     take(3)
     
 - 
 __takeLast()  指定原始序列中的最后几条数据发射__
+
     takeLast(3)
     
 - 
@@ -404,7 +404,8 @@ Observable的构造方法，即保存构造方法中的参数OnSubscribe
     public static interface OnSubscribe<T> extends Action1<Subscriber<? super T>> {
         // cover for generics insanity
     }
-    
+
+
 OnSubscribe是一个带一个参数的Action1，它的参数是一个Subscriber
 
     public interface Action1<T1> extends Action {
