@@ -79,7 +79,8 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
 
 
 ## 7、操作符
-   *1 **repeat()  对一个Observable重复发射数据**
+   *1 
+   **repeat()  对一个Observable重复发射数据**
 例：
     
     Observable.just(1, 2).repeat(5).subscribe(new Subscriber<Integer>() {
@@ -99,7 +100,8 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
         }
     });
 
-   *2 **defer() 延迟Observable的创建直到观察者订阅**
+   *2 
+   **defer() 延迟Observable的创建直到观察者订阅**
 例：
     
     private Observable<Long> getDeferObservable() {
@@ -126,7 +128,8 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
         }
     }
 
-3. interval() 在指定的时间间隔内重复数字 0到正无穷
+*3 
+**interval() 在指定的时间间隔内重复数字 0到正无穷**
 
     Subscription topeMePlease = Observable.interval(3, TimeUnit.SECONDS)
             .subscribe(new Observer<Long>() {
@@ -146,13 +149,15 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
                 }
             });
 
-4、timer()  指定延迟时间指定间隔发射
-Observable.timer(3, 100, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
-    @Override
-    public void call(Long aLong) {
-        System.out.println("aLong------>" + aLong);
-    }
-});
+*4
+**timer()  指定延迟时间指定间隔发射**
+
+    Observable.timer(3, 100, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
+        @Override
+        public void call(Long aLong) {
+            System.out.println("aLong------>" + aLong);
+        }
+    });
 
 5、filter()  过滤出符合要求的数据
      filter((appInfo) -> appInfo.getName().startWith(“C”)) //过滤出C开头的应用名称
