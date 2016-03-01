@@ -79,8 +79,9 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
 
 
 ## 7、操作符
-   *1 
-   **repeat()  对一个Observable重复发射数据
+
+*1 
+   _repeat()  对一个Observable重复发射数据_
 例：
     
     Observable.just(1, 2).repeat(5).subscribe(new Subscriber<Integer>() {
@@ -100,8 +101,8 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
         }
     });
 
-   *2 
-   **defer() 延迟Observable的创建直到观察者订阅
+* 2 
+   _defer() 延迟Observable的创建直到观察者订阅_
 例：
     
     private Observable<Long> getDeferObservable() {
@@ -113,7 +114,7 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
         });
     }
 
-**每次生成新的observable
+_每次生成新的observable_
 
     @Test
     public void testDefer() {
@@ -128,8 +129,8 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
         }
     }
 
-*3 
-**interval() 在指定的时间间隔内重复数字 0到正无穷
+* 3 
+_interval() 在指定的时间间隔内重复数字 0到正无穷_
 
     Subscription topeMePlease = Observable.interval(3, TimeUnit.SECONDS)
             .subscribe(new Observer<Long>() {
@@ -150,7 +151,7 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
             });
 
 *4
-**timer()  指定延迟时间指定间隔发射
+_timer()  指定延迟时间指定间隔发射_
 
     Observable.timer(3, 100, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
         @Override
