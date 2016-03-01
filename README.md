@@ -17,18 +17,18 @@
 
 ## 3、一个简单的示例
 
-A、创建一个Observable
-Observable<String> myObservable = Observable.create(
+#### A、创建一个Observable
+'Observable<String> myObservable = Observable.create(
     new Observable.OnSubscribe<String>() {
          @Override
            public void call(Subscriber<? super String>sub) {
            sub.onNext("Hello, world!");
            sub.onCompleted();
          }
-    });
+    });'
 
-B、创建一个Subscriber
-Subscriber<String> mySubscriber = new Subscriber<String>() {
+#### B、创建一个Subscriber
+'Subscriber<String> mySubscriber = new Subscriber<String>() {
      @Override
      public void onNext(String s) {
           System.out.println(s);
@@ -40,7 +40,7 @@ Subscriber<String> mySubscriber = new Subscriber<String>() {
      @Override
      public void onError(Throwable e) {
      }
-};
+};'
 
 C、将两者联系起来
 myObservable.subscribe(mySubscriber); // Outputs "Hello, world!"
