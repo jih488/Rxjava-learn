@@ -70,6 +70,7 @@ AsyncSubject只会发布最后一个数据 给已经订阅的每一个观察者�
 ***
 
 最最关键的几个概念：**Observable   Observer    Action(Observer observer)   **
+
 当Observable被subscribe（订阅）的时候，调用action的call方法
 
 和观察者模式对比：  被观察者     观察者      被观察持有观察者的引用，当数据变化时通知观察者
