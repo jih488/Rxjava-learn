@@ -1,9 +1,9 @@
 # Rxjava-learn
 
-1、github 项目地址：  https://github.com/ReactiveX/RxJava
+## 1、github 项目地址：  https://github.com/ReactiveX/RxJava
 （RxAndroid 是一个专门为Android开发做出最小适配框架，可以方便的写出响应式的组件和一站式服务）
 
-2、rxjava是一个响应式的编程框架，基于观察者模式。
+## 2、rxjava是一个响应式的编程框架，基于观察者模式。
 其中关键的要素就是Observable(事件产生者,也是事件的观察者)  Operator（操作符） Subscriber（事件的消费者，也是事件的订阅者）
 
 特点：使用可观察序列编写异步和事件驱动的库，扩展了观察者模式以支持数据和事件序列    ，并且加入了operator操作符来实现数据转换和事件过滤
